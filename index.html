@@ -1,0 +1,2001 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    >
+
+    <title>Fitness & Nutrition Tracker</title>
+
+    <meta
+        name="description"
+        content="Nutrition, training and body progress dashboard. All data stays on this device."
+    >
+
+    <!-- ===== INSTALLABLE APP (PWA) ===== -->
+
+    <link rel="manifest" href="./manifest.json">
+
+    <meta name="theme-color" content="#0B0812">
+    <meta name="color-scheme" content="dark">
+
+    <link rel="icon" href="./icons/icon-192.png" sizes="192x192" type="image/png">
+    <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+
+    <!-- iOS: run full screen when opened from the home screen -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Fitness">
+
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+
+<body>
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
+<header>
+
+    <h1>Fitness & Nutrition Tracker</h1>
+
+    <p>
+        Nutrition, Training & Body Progress Dashboard
+    </p>
+
+</header>
+
+
+<!-- =====================================================
+     NAVIGATION
+===================================================== -->
+
+<nav>
+
+    <button
+        class="nav-btn active-nav"
+        onclick="showPage('dashboard', this)"
+    >
+        Dashboard
+    </button>
+
+
+    <button
+        class="nav-btn"
+        onclick="showPage('foodLog', this)"
+    >
+        Food Log
+    </button>
+
+
+    <button
+        class="nav-btn"
+        onclick="showPage('dailyTracker', this)"
+    >
+        Daily Tracker
+    </button>
+
+
+    <button
+        class="nav-btn"
+        onclick="showPage('bodyProgress', this)"
+    >
+        Body Progress
+    </button>
+
+
+    <button
+        class="nav-btn"
+        onclick="showPage('workoutTracker', this)"
+    >
+        Workout Tracker
+    </button>
+
+
+    <button
+        class="nav-btn"
+        onclick="showPage('foodDatabase', this)"
+    >
+        Food Database
+    </button>
+
+</nav>
+
+
+
+<main>
+
+
+<!-- =====================================================
+     DASHBOARD
+===================================================== -->
+
+<section
+    class="page active"
+    id="dashboard"
+>
+
+    <div class="page-title">
+
+        <div>
+
+            <h2>Dashboard</h2>
+
+            <p>
+                Your nutrition, fitness and body progress.
+            </p>
+
+        </div>
+
+
+        <div class="page-title-right-group">
+
+            <div class="backup-corner">
+
+                <button id="exportDataBtn" class="backup-mini-btn" title="Export backup">⬇</button>
+
+                <label for="importDataInput" class="backup-mini-btn" title="Import backup">⬆</label>
+
+                <input
+                    type="file"
+                    id="importDataInput"
+                    accept="application/json"
+                    hidden
+                >
+
+            </div>
+
+            <div>
+
+                <label for="dashboardRange">
+                    Chart Range
+                </label>
+
+                <select id="dashboardRange">
+
+                    <option value="7">
+                        Last 7 Days
+                    </option>
+
+                    <option value="30">
+                        Last 30 Days
+                    </option>
+
+                    <option value="all">
+                        All Time
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="streak-badge" id="streakBadge">🔥 0 day streak</div>
+
+
+    <div class="panel">
+
+        <h3>Weekly Recap (Last 7 Days)</h3>
+
+        <div class="weekly-recap-grid">
+
+            <div class="card">
+                <span>Avg Calories</span>
+                <strong id="recapAvgCalories">0 kcal</strong>
+            </div>
+
+            <div class="card">
+                <span>Avg Protein</span>
+                <strong id="recapAvgProtein">0 g</strong>
+            </div>
+
+            <div class="card">
+                <span>Workouts</span>
+                <strong id="recapWorkouts">0</strong>
+            </div>
+
+            <div class="card">
+                <span>Weight Change</span>
+                <strong id="recapWeightChange">--</strong>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="panel">
+
+        <h3>
+            Achievements
+        </h3>
+
+        <div class="achievements-grid" id="achievementsGrid"></div>
+
+    </div>
+
+
+    <div class="panel">
+
+        <h3>
+            Activity (Last 12 Weeks)
+        </h3>
+
+        <div class="heatmap-grid" id="calendarHeatmap"></div>
+
+    </div>
+
+
+
+    <!-- TODAY SUMMARY -->
+
+    <h3 class="section-title">
+        Today's Summary
+    </h3>
+
+
+    <div class="summary">
+
+        <div class="card">
+
+            <span>Calories</span>
+
+            <strong id="summaryCalories">
+                0 kcal
+            </strong>
+
+            <div class="battery" id="summaryCaloriesBattery">
+                <div class="battery-track">
+                    <div class="battery-fill"></div>
+                </div>
+                <span class="battery-label">0%</span>
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <span>Protein</span>
+
+            <strong id="summaryProtein">
+                0 g
+            </strong>
+
+            <div class="battery" id="summaryProteinBattery">
+                <div class="battery-track">
+                    <div class="battery-fill"></div>
+                </div>
+                <span class="battery-label">0%</span>
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <span>Carbs</span>
+
+            <strong id="summaryCarbs">
+                0 g
+            </strong>
+
+            <div class="battery" id="summaryCarbsBattery">
+                <div class="battery-track">
+                    <div class="battery-fill"></div>
+                </div>
+                <span class="battery-label">0%</span>
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <span>Fats</span>
+
+            <strong id="summaryFats">
+                0 g
+            </strong>
+
+            <div class="battery" id="summaryFatsBattery">
+                <div class="battery-track">
+                    <div class="battery-fill"></div>
+                </div>
+                <span class="battery-label">0%</span>
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <span>Fiber</span>
+
+            <strong id="summaryFiber">
+                0 g
+            </strong>
+
+            <div class="battery" id="summaryFiberBattery">
+                <div class="battery-track">
+                    <div class="battery-fill"></div>
+                </div>
+                <span class="battery-label">0%</span>
+            </div>
+
+        </div>
+
+    </div>
+
+<!-- =====================================================
+     DAILY FITNESS SCORE
+===================================================== -->
+
+<h3 class="section-title">
+    Daily Fitness Score
+</h3>
+
+<div class="fitness-score-panel">
+
+    <div class="fitness-score-main">
+
+        <span class="score-label">Today's Score</span>
+
+        <strong id="fitnessScore">
+            0 / 100
+        </strong>
+
+        <span
+            id="fitnessScoreStatus"
+            class="fitness-score-status"
+        >
+            No Data
+        </span>
+
+    </div>
+
+
+    <div class="score-breakdown">
+
+        <div class="score-item">
+            <span>Protein</span>
+            <strong id="scoreProtein">0 / 20</strong>
+        </div>
+
+        <div class="score-item">
+            <span>Deficit</span>
+            <strong id="scoreCalories">0 / 20</strong>
+        </div>
+
+        <div class="score-item">
+            <span>Fiber</span>
+            <strong id="scoreFiber">0 / 20</strong>
+        </div>
+
+        <div class="score-item">
+            <span>Steps</span>
+            <strong id="scoreSteps">0 / 20</strong>
+        </div>
+
+        <div class="score-item">
+            <span>Workout</span>
+            <strong id="scoreWorkout">0 / 20</strong>
+        </div>
+
+    </div>
+
+</div>
+
+
+
+    <!-- CHARTS -->
+
+    <div class="charts-grid">
+
+
+        <div class="chart-card">
+
+            <h3>
+                Calories vs TDEE
+            </h3>
+
+            <canvas id="caloriesChart"></canvas>
+
+        </div>
+
+
+        <div class="chart-card">
+
+            <h3>
+                Daily Calorie Deficit
+            </h3>
+
+            <canvas id="deficitChart"></canvas>
+
+        </div>
+
+
+        <div class="chart-card">
+
+            <h3>
+                Protein Intake
+            </h3>
+
+            <canvas id="proteinChart"></canvas>
+
+        </div>
+
+
+        <div class="chart-card">
+
+            <h3>
+                Weight Progress
+                <span id="weightTrendIndicator"></span>
+            </h3>
+
+            <canvas id="weightChart"></canvas>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     FOOD LOG
+===================================================== -->
+
+<section
+    class="page"
+    id="foodLog"
+>
+
+    <div class="page-title">
+
+        <div>
+
+            <h2>Food Log</h2>
+
+            <p>
+                Track Breakfast, Lunch, Dinner and Snacks.
+            </p>
+
+        </div>
+
+
+        <div class="date-box">
+
+            <label for="logDate">
+                Date
+            </label>
+
+            <input
+                type="date"
+                id="logDate"
+            >
+
+        </div>
+
+    </div>
+
+
+
+    <!-- FAVORITE FOODS -->
+
+    <div id="favoriteFoodsRow"></div>
+
+
+    <!-- ADD FOOD -->
+
+    <div class="panel">
+
+        <h3>
+            Add Food
+        </h3>
+
+
+        <div class="log-form">
+
+
+            <div>
+
+                <label for="mealSelect">
+                    Meal
+                </label>
+
+                <select id="mealSelect">
+
+                    <option value="Breakfast">
+                        Breakfast
+                    </option>
+
+                    <option value="Lunch">
+                        Lunch
+                    </option>
+
+                    <option value="Dinner">
+                        Dinner
+                    </option>
+
+                    <option value="Snacks">
+                        Snacks
+                    </option>
+
+                </select>
+
+            </div>
+
+
+
+            <div class="food-search-wrapper">
+
+                <label for="foodSearchInput">
+                    Food
+                </label>
+
+                <input
+                    type="text"
+                    id="foodSearchInput"
+                    placeholder="Search food..."
+                    autocomplete="off"
+                >
+
+                <div id="foodSearchResults"></div>
+
+            </div>
+
+
+
+            <div>
+
+                <label for="foodGrams">
+                    Amount (g)
+                </label>
+
+                <input
+                    type="number"
+                    id="foodGrams"
+                    placeholder="Example: 200"
+                    min="1"
+                    step="1"
+                >
+
+            </div>
+
+
+
+            <div class="button-container">
+
+                <button
+                    id="addToLog"
+                    class="primary-btn"
+                >
+                    Add to Meal
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- FOOD LOG TABLE -->
+
+    <div class="panel">
+
+        <h3>
+            Meals
+        </h3>
+
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Meal</th>
+
+                        <th>Food</th>
+
+                        <th>Amount</th>
+
+                        <th>Calories</th>
+
+                        <th>Protein</th>
+
+                        <th>Carbs</th>
+
+                        <th>Fats</th>
+
+                        <th>Fiber</th>
+
+                        <th>Action</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="foodLogTable"></tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- FOOD LOG TOTALS -->
+
+    <div class="summary meal-summary">
+
+
+        <div class="card">
+
+            <span>Calories</span>
+
+            <strong id="logCalories">
+                0 kcal
+            </strong>
+
+        </div>
+
+
+        <div class="card">
+
+            <span>Protein</span>
+
+            <strong id="logProtein">
+                0 g
+            </strong>
+
+        </div>
+
+
+        <div class="card">
+
+            <span>Carbs</span>
+
+            <strong id="logCarbs">
+                0 g
+            </strong>
+
+        </div>
+
+
+        <div class="card">
+
+            <span>Fats</span>
+
+            <strong id="logFats">
+                0 g
+            </strong>
+
+        </div>
+
+
+        <div class="card">
+
+            <span>Fiber</span>
+
+            <strong id="logFiber">
+                0 g
+            </strong>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     DAILY TRACKER
+===================================================== -->
+
+<section
+    class="page"
+    id="dailyTracker"
+>
+
+    <div class="page-title">
+
+        <div>
+
+            <h2>Daily Tracker</h2>
+
+            <p>
+                Track sleep, steps, workouts, TDEE
+                and calorie deficit.
+            </p>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="panel">
+
+
+        <div class="tracker-grid">
+
+
+            <!-- DATE -->
+
+            <div>
+
+                <label for="trackerDate">
+                    Date
+                </label>
+
+                <input
+                    type="date"
+                    id="trackerDate"
+                >
+
+            </div>
+
+
+
+            <!-- SLEEP -->
+
+            <div>
+
+                <label for="sleepInput">
+                    Sleep Hours
+                </label>
+
+                <input
+                    type="number"
+                    id="sleepInput"
+                    placeholder="Example: 8"
+                    min="0"
+                    max="24"
+                    step="0.5"
+                >
+
+            </div>
+
+
+
+            <!-- STEPS -->
+
+            <div>
+
+                <label for="stepsInput">
+                    Steps
+                </label>
+
+                <input
+                    type="number"
+                    id="stepsInput"
+                    placeholder="Example: 7000"
+                    min="0"
+                >
+
+            </div>
+
+
+
+            <!-- WORKOUT -->
+
+            <div>
+
+                <label for="workoutInput">
+                    Workout
+                </label>
+
+                <select id="workoutInput">
+
+                    <option value="Rest">
+                        Rest
+                    </option>
+
+                    <option value="Upper A">
+                        Upper A
+                    </option>
+
+                    <option value="Upper B">
+                        Upper B
+                    </option>
+
+                    <option value="Lower A">
+                        Lower A
+                    </option>
+
+                    <option value="Lower B">
+                        Lower B
+                    </option>
+
+                </select>
+
+            </div>
+
+
+
+            <!-- STEPS CALORIES -->
+
+            <div>
+
+                <label for="stepsCaloriesInput">
+                    Steps Calories
+                </label>
+
+                <input
+                    type="number"
+                    id="stepsCaloriesInput"
+                    readonly
+                >
+
+            </div>
+
+
+
+            <!-- EXERCISE -->
+
+            <div>
+
+                <label for="exerciseCaloriesInput">
+                    Exercise Calories
+                </label>
+
+                <input
+                    type="number"
+                    id="exerciseCaloriesInput"
+                    readonly
+                >
+
+            </div>
+
+
+
+            <!-- CALORIES EATEN -->
+
+            <div>
+
+                <label for="caloriesEatenInput">
+                    Calories Eaten
+                </label>
+
+                <input
+                    type="number"
+                    id="caloriesEatenInput"
+                    readonly
+                >
+
+            </div>
+
+
+
+            <!-- TDEE -->
+
+            <div>
+
+                <label for="tdeeInput">
+                    TDEE
+                </label>
+
+                <input
+                    type="number"
+                    id="tdeeInput"
+                    readonly
+                >
+
+            </div>
+
+
+
+            <!-- DEFICIT -->
+
+            <div>
+
+                <label for="deficitInput">
+                    Calorie Deficit
+                </label>
+
+                <input
+                    type="number"
+                    id="deficitInput"
+                    readonly
+                >
+
+            </div>
+
+        </div>
+
+
+
+        <div style="margin-top: 18px;">
+            <label for="dailyNotesInput">
+                Notes
+            </label>
+
+            <textarea
+                id="dailyNotesInput"
+                rows="3"
+                placeholder="How did today feel? Sleep quality, energy, anything worth noting..."
+            ></textarea>
+        </div>
+
+        <button
+            id="saveDailyTracker"
+            class="primary-btn tracker-save"
+        >
+            Save Day
+        </button>
+
+    </div>
+
+
+
+    <!-- SAVED DAILY TRACKER -->
+
+    <div class="panel">
+
+        <h3>
+            Saved Days
+        </h3>
+
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Date</th>
+
+                        <th>Sleep</th>
+
+                        <th>Steps</th>
+
+                        <th>Steps Calories</th>
+
+                        <th>Workout</th>
+
+                        <th>Exercise Calories</th>
+
+                        <th>Calories Eaten</th>
+
+                        <th>TDEE</th>
+
+                        <th>Deficit</th>
+
+                        <th>Notes</th>
+
+                        <th>Action</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="dailyTrackerTable"></tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     BODY PROGRESS
+===================================================== -->
+
+<section
+    class="page"
+    id="bodyProgress"
+>
+
+    <div class="page-title">
+
+        <div>
+
+            <h2>Body Progress</h2>
+
+            <p>
+                Record your weight, measurements and
+                progress photos every two weeks.
+            </p>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- BODY MEASUREMENTS -->
+
+    <div class="panel">
+
+        <h3>
+            New Progress Check-In
+        </h3>
+
+
+        <div class="body-progress-grid">
+
+
+            <div>
+
+                <label for="progressDate">
+                    Date
+                </label>
+
+                <input
+                    type="date"
+                    id="progressDate"
+                >
+
+            </div>
+
+
+
+            <div>
+
+                <label for="progressWeight">
+                    Weight (kg)
+                </label>
+
+                <input
+                    type="number"
+                    id="progressWeight"
+                    placeholder="Example: 82.3"
+                    step="0.1"
+                >
+
+            </div>
+
+
+
+            <div>
+
+                <label for="waistInput">
+                    Waist (cm)
+                </label>
+
+                <input
+                    type="number"
+                    id="waistInput"
+                    placeholder="Example: 93"
+                    step="0.1"
+                >
+
+            </div>
+
+
+
+            <div>
+
+                <label for="chestInput">
+                    Chest (cm)
+                </label>
+
+                <input
+                    type="number"
+                    id="chestInput"
+                    placeholder="Example: 101.5"
+                    step="0.1"
+                >
+
+            </div>
+
+
+
+            <div>
+
+                <label for="leftArmInput">
+                    Left Arm (cm)
+                </label>
+
+                <input
+                    type="number"
+                    id="leftArmInput"
+                    placeholder="Example: 31.2"
+                    step="0.1"
+                >
+
+            </div>
+
+
+
+            <div>
+
+                <label for="rightArmInput">
+                    Right Arm (cm)
+                </label>
+
+                <input
+                    type="number"
+                    id="rightArmInput"
+                    placeholder="Example: 32"
+                    step="0.1"
+                >
+
+            </div>
+
+
+
+            <div>
+
+                <label for="leftThighInput">
+                    Left Thigh (cm)
+                </label>
+
+                <input
+                    type="number"
+                    id="leftThighInput"
+                    placeholder="Example: 65"
+                    step="0.1"
+                >
+
+            </div>
+
+
+
+            <div>
+
+                <label for="rightThighInput">
+                    Right Thigh (cm)
+                </label>
+
+                <input
+                    type="number"
+                    id="rightThighInput"
+                    placeholder="Example: 63"
+                    step="0.1"
+                >
+
+            </div>
+
+        </div>
+
+
+
+        <!-- PROGRESS PHOTOS -->
+
+        <h3 class="photo-title">
+            Progress Photos
+        </h3>
+
+
+        <div class="progress-photo-grid">
+
+
+            <!-- FRONT PHOTO -->
+
+            <div class="photo-upload-card">
+
+                <h4>
+                    Front Photo
+                </h4>
+
+                <div class="photo-preview">
+
+                    <img
+                        id="frontPhotoPreview"
+                        alt="Front progress preview"
+                    >
+
+                    <span id="frontPhotoPlaceholder">
+                        No front photo selected
+                    </span>
+
+                </div>
+
+
+                <label
+                    class="photo-upload-btn"
+                    for="frontPhotoInput"
+                >
+                    Choose Front Photo
+                </label>
+
+
+                <input
+                    type="file"
+                    id="frontPhotoInput"
+                    accept="image/*"
+                    hidden
+                >
+
+            </div>
+
+
+
+            <!-- BACK PHOTO -->
+
+            <div class="photo-upload-card">
+
+                <h4>
+                    Back Photo
+                </h4>
+
+                <div class="photo-preview">
+
+                    <img
+                        id="backPhotoPreview"
+                        alt="Back progress preview"
+                    >
+
+                    <span id="backPhotoPlaceholder">
+                        No back photo selected
+                    </span>
+
+                </div>
+
+
+                <label
+                    class="photo-upload-btn"
+                    for="backPhotoInput"
+                >
+                    Choose Back Photo
+                </label>
+
+
+                <input
+                    type="file"
+                    id="backPhotoInput"
+                    accept="image/*"
+                    hidden
+                >
+
+            </div>
+
+        </div>
+
+
+
+        <button
+            id="saveBodyProgress"
+            class="primary-btn progress-save"
+        >
+            Save Progress
+        </button>
+
+    </div>
+
+
+
+    <!-- BEFORE / AFTER SLIDER -->
+
+    <div class="panel" id="beforeAfterSection">
+
+        <h3>
+            Before & After
+        </h3>
+
+        <div class="before-after-container">
+
+            <img id="beforeAfterBefore" alt="Oldest progress photo">
+
+            <div id="beforeAfterAfterWrapper">
+                <img id="beforeAfterAfter" alt="Newest progress photo">
+            </div>
+
+        </div>
+
+        <input
+            type="range"
+            id="beforeAfterSlider"
+            min="0"
+            max="100"
+            value="50"
+        >
+
+        <div class="before-after-labels">
+            <span id="beforeAfterBeforeLabel">Oldest</span>
+            <span id="beforeAfterAfterLabel">Newest</span>
+        </div>
+
+    </div>
+
+
+
+    <!-- BODY MEASUREMENT GOALS -->
+
+    <div class="panel">
+
+        <h3>
+            Body Measurement Goals
+        </h3>
+
+        <div class="tracker-grid">
+
+            <div>
+                <label for="goalWaist">Target Waist (cm)</label>
+                <input type="number" id="goalWaist" step="0.1">
+            </div>
+
+            <div>
+                <label for="goalChest">Target Chest (cm)</label>
+                <input type="number" id="goalChest" step="0.1">
+            </div>
+
+            <div>
+                <label for="goalArms">Target Arms (cm)</label>
+                <input type="number" id="goalArms" step="0.1">
+            </div>
+
+            <div>
+                <label for="goalThighs">Target Thighs (cm)</label>
+                <input type="number" id="goalThighs" step="0.1">
+            </div>
+
+        </div>
+
+        <button id="saveMeasurementGoals" class="primary-btn tracker-save">
+            Save Goals
+        </button>
+
+    </div>
+
+
+    <!-- LATEST MEASUREMENTS VS GOALS -->
+
+    <div class="measurement-summary">
+
+        <div class="card">
+            <span>Waist</span>
+            <strong id="latestWaist">--</strong>
+            <div class="battery" id="latestWaistBattery">
+                <div class="battery-track"><div class="battery-fill"></div></div>
+                <span class="battery-label">0%</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <span>Chest</span>
+            <strong id="latestChest">--</strong>
+            <div class="battery" id="latestChestBattery">
+                <div class="battery-track"><div class="battery-fill"></div></div>
+                <span class="battery-label">0%</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <span>Arms (avg)</span>
+            <strong id="latestArms">--</strong>
+            <div class="battery" id="latestArmsBattery">
+                <div class="battery-track"><div class="battery-fill"></div></div>
+                <span class="battery-label">0%</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <span>Thighs (avg)</span>
+            <strong id="latestThighs">--</strong>
+            <div class="battery" id="latestThighsBattery">
+                <div class="battery-track"><div class="battery-fill"></div></div>
+                <span class="battery-label">0%</span>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- MEASUREMENT TREND CHARTS -->
+
+    <div class="charts-grid">
+
+        <div class="chart-card">
+            <h3>Waist Progress</h3>
+            <canvas id="waistChart"></canvas>
+        </div>
+
+        <div class="chart-card">
+            <h3>Chest Progress</h3>
+            <canvas id="chestChart"></canvas>
+        </div>
+
+        <div class="chart-card">
+            <h3>Arms Progress</h3>
+            <canvas id="armsChart"></canvas>
+        </div>
+
+        <div class="chart-card">
+            <h3>Thighs Progress</h3>
+            <canvas id="thighsChart"></canvas>
+        </div>
+
+    </div>
+
+
+
+    <!-- BODY PROGRESS HISTORY -->
+
+    <div class="panel">
+
+        <h3>
+            Progress History
+        </h3>
+
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Date</th>
+
+                        <th>Weight (kg)</th>
+
+                        <th>Waist (cm)</th>
+
+                        <th>Chest (cm)</th>
+
+                        <th>Left Arm (cm)</th>
+
+                        <th>Right Arm (cm)</th>
+
+                        <th>Left Thigh (cm)</th>
+
+                        <th>Right Thigh (cm)</th>
+
+                        <th>Front Photo</th>
+
+                        <th>Back Photo</th>
+
+                        <th>Action</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="bodyProgressTable"></tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     WORKOUT TRACKER
+===================================================== -->
+
+<section
+    class="page"
+    id="workoutTracker"
+>
+
+    <div class="page-title">
+
+        <div>
+
+            <h2>Workout Tracker</h2>
+
+            <p>
+                Plan your gym sessions and track the
+                weight you use for each exercise.
+            </p>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- WORKOUT SELECTOR -->
+
+    <div class="panel">
+
+        <div class="workout-top-grid">
+
+
+            <div>
+
+                <label for="workoutDate">
+                    Workout Date
+                </label>
+
+                <input
+                    type="date"
+                    id="workoutDate"
+                >
+
+            </div>
+
+
+
+            <div>
+
+                <label for="workoutPlanSelect">
+                    Workout
+                </label>
+
+                <select id="workoutPlanSelect">
+
+                    <option value="Upper A">
+                        Upper A
+                    </option>
+
+                    <option value="Upper B">
+                        Upper B
+                    </option>
+
+                    <option value="Lower A">
+                        Lower A
+                    </option>
+
+                    <option value="Lower B">
+                        Lower B
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- TODAY'S WORKOUT -->
+
+    <div class="panel">
+
+        <div class="workout-heading">
+
+            <div>
+
+                <h3 id="currentWorkoutTitle">
+                    Upper A
+                </h3>
+
+                <p>
+                    Enter the weight you used and your
+                    completed reps.
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="table-container">
+
+            <table class="workout-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Exercise</th>
+
+                        <th>Target Sets</th>
+
+                        <th>Target Reps</th>
+
+                        <th>Weight (kg)</th>
+
+                        <th>Notes</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="currentWorkoutTable"></tbody>
+
+            </table>
+
+        </div>
+
+
+
+        <button
+            id="saveWorkout"
+            class="primary-btn workout-save"
+        >
+            Save Workout
+        </button>
+
+    </div>
+
+
+
+    <!-- WORKOUT HISTORY -->
+
+    <div class="panel">
+
+        <h3>
+            Workout History
+        </h3>
+
+        <input
+            type="text"
+            id="workoutHistorySearch"
+            placeholder="Search by exercise or workout..."
+            style="margin-bottom: 16px;"
+        >
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Date</th>
+
+                        <th>Workout</th>
+
+                        <th>Exercises</th>
+
+                        <th>Action</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="workoutHistoryTable"></tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     FOOD DATABASE
+===================================================== -->
+
+<section
+    class="page"
+    id="foodDatabase"
+>
+
+    <div class="page-title">
+
+        <div>
+
+            <h2>Food Database</h2>
+
+            <p>
+                Nutrition values per 100 grams.
+            </p>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ADD FOOD -->
+
+    <div class="panel">
+
+        <h3>
+            Add Food
+        </h3>
+
+
+        <div class="database-form">
+
+
+            <div class="food-name-field">
+
+                <label for="foodName">
+                    Food Name
+                </label>
+
+                <input
+                    type="text"
+                    id="foodName"
+                    placeholder="Chicken Breast Cooked"
+                >
+
+            </div>
+
+
+
+            <div>
+
+                <label for="calories">
+                    Calories
+                </label>
+
+                <input
+                    type="number"
+                    id="calories"
+                    placeholder="165"
+                    step="0.1"
+                >
+
+            </div>
+
+
+
+            <div>
+
+                <label for="protein">
+                    Protein
+                </label>
+
+                <input
+                    type="number"
+                    id="protein"
+                    placeholder="31"
+                    step="0.1"
+                >
+
+            </div>
+
+
+
+            <div>
+
+                <label for="carbs">
+                    Carbs
+                </label>
+
+                <input
+                    type="number"
+                    id="carbs"
+                    placeholder="0"
+                    step="0.1"
+                >
+
+            </div>
+
+
+
+            <div>
+
+                <label for="fats">
+                    Fats
+                </label>
+
+                <input
+                    type="number"
+                    id="fats"
+                    placeholder="3.6"
+                    step="0.1"
+                >
+
+            </div>
+
+
+
+            <div>
+
+                <label for="fiber">
+                    Fiber
+                </label>
+
+                <input
+                    type="number"
+                    id="fiber"
+                    placeholder="0"
+                    step="0.1"
+                >
+
+            </div>
+
+
+
+            <div class="button-container">
+
+                <button
+                    id="addFood"
+                    class="primary-btn"
+                >
+                    Add Food
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- FOOD DATABASE TABLE -->
+
+    <div class="panel">
+
+        <h3>
+            Foods
+        </h3>
+
+        <input
+            type="text"
+            id="foodDatabaseSearch"
+            placeholder="Search foods..."
+            style="margin-bottom: 16px;"
+        >
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Food</th>
+
+                        <th>Unit</th>
+
+                        <th>Calories</th>
+
+                        <th>Protein</th>
+
+                        <th>Carbs</th>
+
+                        <th>Fats</th>
+
+                        <th>Fiber</th>
+
+                        <th>Action</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="foodTable"></tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+</main>
+
+
+
+<!-- =====================================================
+     PHOTO VIEWER
+===================================================== -->
+
+<!-- =====================================================
+     REST TIMER WIDGET
+===================================================== -->
+
+<div id="restTimerWidget" class="rest-timer-widget">
+    <span id="restTimerDisplay">00:00</span>
+    <button type="button" id="restTimerPause">Pause</button>
+    <button type="button" id="restTimerClose">Skip</button>
+</div>
+
+<div
+    id="photoModal"
+    class="photo-modal"
+>
+
+    <button
+        id="closePhotoModal"
+        class="photo-modal-close"
+        type="button"
+    >
+        ×
+    </button>
+
+
+    <img
+        id="photoModalImage"
+        alt="Progress photo"
+    >
+
+</div>
+
+
+
+<!-- =====================================================
+     JAVASCRIPT
+===================================================== -->
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Our Website -->
+<script src="./script.js"></script>
+
+
+<!-- =====================================================
+     OFFLINE SUPPORT + HOME SCREEN SHORTCUTS
+===================================================== -->
+
+<script>
+(function () {
+
+    // --- Home screen shortcuts: ?page=workoutTracker etc. ---
+
+    window.addEventListener("load", function () {
+
+        var requested =
+            new URLSearchParams(location.search).get("page");
+
+        if (!requested || typeof window.showPage !== "function") return;
+
+        var button = null;
+
+        document.querySelectorAll(".nav-btn").forEach(function (btn) {
+            var handler = btn.getAttribute("onclick") || "";
+            if (handler.indexOf("'" + requested + "'") !== -1) {
+                button = btn;
+            }
+        });
+
+        if (document.getElementById(requested)) {
+            window.showPage(requested, button);
+        }
+
+        // Clean the URL so a refresh doesn't keep forcing that page.
+        history.replaceState(null, "", location.pathname);
+    });
+
+
+    // --- Service worker: makes the app work with no signal ---
+    // Needs https:// or localhost. Opening the file directly
+    // (file://) simply skips this - the app still works.
+
+    if (!("serviceWorker" in navigator)) return;
+    if (location.protocol === "file:") return;
+
+    window.addEventListener("load", function () {
+        navigator.serviceWorker
+            .register("./sw.js")
+            .catch(function (err) {
+                console.warn("Offline mode unavailable:", err);
+            });
+    });
+
+})();
+</script>
+
+
+</body>
+
+</html>

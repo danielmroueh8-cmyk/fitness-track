@@ -1,0 +1,53 @@
+{
+  "name": "Fitness & Nutrition Tracker",
+  "short_name": "Fitness",
+  "description": "Nutrition, training and body progress dashboard. All data stays on this device.",
+  "start_url": "./",
+  "scope": "./",
+  "id": "./",
+  "display": "standalone",
+  "background_color": "#08060E",
+  "theme_color": "#0B0812",
+  "orientation": "any",
+  "categories": ["health", "fitness", "lifestyle"],
+  "icons": [
+    {
+      "src": "./icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Workout Tracker",
+      "short_name": "Workout",
+      "url": "./?page=workoutTracker",
+      "icons": [{ "src": "./icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Food Log",
+      "short_name": "Food",
+      "url": "./?page=foodLog",
+      "icons": [{ "src": "./icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Daily Tracker",
+      "short_name": "Daily",
+      "url": "./?page=dailyTracker",
+      "icons": [{ "src": "./icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+# OS / editor noise
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
+.vscode/
+.idea/
+
+# Never commit personal data exports
+fitness-tracker-backup-*.json
+*.backup.json
