@@ -48,7 +48,10 @@ document.addEventListener("DOMContentLoaded", () => {
         { name: "Cashews Raw", calories: 553, protein: 18.2, carbs: 30.2, fats: 43.9, fiber: 3.3 },
         { name: "Cucumber", calories: 15, protein: 0.65, carbs: 3.63, fats: 0.11, fiber: 0.5 },
         { name: "Chicken Breast Boiled", calories: 151, protein: 28.7, carbs: 0, fats: 3, fiber: 0 },
-        { name: "Bamayi Sauce", calories: 173, protein: 4.5, carbs: 10, fats: 13, fiber: 2 }
+        { name: "Bamayi Sauce", calories: 173, protein: 4.5, carbs: 10, fats: 13, fiber: 2 },
+        { name: "Laban Full Fat", calories: 61, protein: 3.5, carbs: 4.7, fats: 3.3, fiber: 0 },
+        { name: "Yellow Mustard", calories: 60, protein: 3.7, carbs: 5.8, fats: 3.3, fiber: 3.2 },
+        { name: "Garlic Raw", calories: 149, protein: 6.4, carbs: 33.1, fats: 0.5, fiber: 2.1 }
     ];
 
 
