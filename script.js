@@ -630,11 +630,8 @@ document.addEventListener("DOMContentLoaded", () => {
         // Battery-style goal progress
         const goals = getGoals();
 
-        const trackerDay =
-            dailyTracker.find(day => day.date === logDate);
-
         const calorieTarget =
-            (Number(trackerDay?.tdee) || 1800) - (Number(goals.deficit) || 0);
+            Number(goals.calories) || 1900;
 
         updateNutritionBattery("summaryCalories", totals.calories, calorieTarget);
         updateNutritionBattery("summaryProtein", totals.protein, goals.protein);
@@ -1716,7 +1713,6 @@ document.addEventListener("DOMContentLoaded", () => {
         updateStreakCounter();
         updateAchievements();
         updateCalendarHeatmap();
-        updateWeeklyRecap();
         updateBackupReminder();
 
         createCharts(days, weights);
@@ -1807,71 +1803,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
-    // ==================================================
-    // WEEKLY RECAP
-    // ==================================================
-
-    function updateWeeklyRecap() {
-
-        const calEl = document.getElementById("recapAvgCalories");
-
-        if (!calEl) return;
-
-        const cutoff = new Date();
-        cutoff.setDate(cutoff.getDate() - 6);
-        cutoff.setHours(0, 0, 0, 0);
-
-        const recentDays =
-            dailyTracker.filter(day => new Date(day.date) >= cutoff);
-
-        let totalCalories = 0;
-        let totalProtein = 0;
-        let workoutCount = 0;
-
-        recentDays.forEach(day => {
-            const nutrition = getNutritionTotals(day.date);
-            totalCalories += nutrition.calories;
-            totalProtein += nutrition.protein;
-            if (day.workout && day.workout !== "Rest") workoutCount++;
-        });
-
-        const count = recentDays.length;
-
-        setText(
-            "recapAvgCalories",
-            count ? `${(totalCalories / count).toFixed(0)} kcal` : "0 kcal"
-        );
-
-        setText(
-            "recapAvgProtein",
-            count ? `${(totalProtein / count).toFixed(1)} g` : "0 g"
-        );
-
-        setText("recapWorkouts", `${workoutCount}`);
-
-        const recentWeights =
-            bodyProgress
-                .filter(entry =>
-                    Number(entry.weight) > 0 &&
-                    new Date(entry.date) >= cutoff
-                )
-                .sort((a, b) => new Date(a.date) - new Date(b.date));
-
-        if (recentWeights.length >= 2) {
-
-            const diff =
-                Number(recentWeights[recentWeights.length - 1].weight) -
-                Number(recentWeights[0].weight);
-
-            setText(
-                "recapWeightChange",
-                `${diff > 0 ? "+" : ""}${diff.toFixed(1)} kg`
-            );
-
-        } else {
-            setText("recapWeightChange", "--");
-        }
-    }
 
 
     // ==================================================
@@ -2969,37 +2900,26 @@ function setNutritionStatus(elementId, value, type) {
     }
 
 
-    // CALORIES
+    // CALORIES - judged against the daily calorie goal
     if (type === "calories") {
 
-        const selectedDate =
-            document.getElementById("logDate")?.value || today();
+        const goal =
+            Number(getGoals().calories) || 1900;
 
-        const savedDay =
-            dailyTracker.find(day => day.date === selectedDate);
+        const eaten = Number(value) || 0;
+        const tol = CALORIE_GOAL_TOLERANCE;
 
-        const tdee = Number(savedDay?.tdee) || 0;
-        const deficit = tdee - Number(value || 0);
-
-        if (tdee <= 0) {
-            status = "No TDEE";
-            className = "status-good";
-        }
-        else if (deficit > 800) {
+        if (eaten < goal - tol * 3) {
             status = "Too Low";
             className = "status-too-low";
         }
-        else if (deficit >= 400) {
-            status = "Excellent";
-            className = "status-excellent";
-        }
-        else if (deficit >= 200) {
+        else if (eaten < goal - tol) {
             status = "Good";
             className = "status-good";
         }
-        else if (deficit >= 0) {
-            status = "Low Deficit";
-            className = "status-low";
+        else if (eaten <= goal + tol) {
+            status = "Excellent";
+            className = "status-excellent";
         }
         else {
             status = "High";
@@ -3047,14 +2967,20 @@ function setNutritionStatus(elementId, value, type) {
 // ==================================================
 
 const defaultGoals = {
-    protein: 140,
+    calories: 1900,
     carbs: 200,
+    protein: 140,
     fats: 60,
     fiber: 30,
     steps: 8000,
     sleep: 8,
     deficit: 500
 };
+
+
+// Anything within this many kcal of the goal counts as on target.
+// 1900 +/- 100 gives the 1800-2000 window.
+const CALORIE_GOAL_TOLERANCE = 100;
 
 
 function getGoals() {
@@ -3080,6 +3006,7 @@ function loadGoals() {
 
     const goals = getGoals();
 
+    setValue("goalCalories", goals.calories);
     setValue("goalProtein", goals.protein);
     setValue("goalCarbs", goals.carbs);
     setValue("goalFats", goals.fats);
@@ -3093,6 +3020,9 @@ function loadGoals() {
 function saveGoals() {
 
     const goals = {
+
+        calories:
+            Number(document.getElementById("goalCalories")?.value) || 1900,
 
         protein:
             Number(document.getElementById("goalProtein")?.value) || 140,
