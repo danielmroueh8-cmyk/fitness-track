@@ -51,7 +51,10 @@ document.addEventListener("DOMContentLoaded", () => {
         { name: "Bamayi Sauce", calories: 173, protein: 4.5, carbs: 10, fats: 13, fiber: 2 },
         { name: "Laban Full Fat", calories: 61, protein: 3.5, carbs: 4.7, fats: 3.3, fiber: 0 },
         { name: "Yellow Mustard", calories: 60, protein: 3.7, carbs: 5.8, fats: 3.3, fiber: 3.2 },
-        { name: "Garlic Raw", calories: 149, protein: 6.4, carbs: 33.1, fats: 0.5, fiber: 2.1 }
+        { name: "Garlic Raw", calories: 149, protein: 6.4, carbs: 33.1, fats: 0.5, fiber: 2.1 },
+        { name: "Plain Yogurt", calories: 66, protein: 8, carbs: 4, fats: 2, fiber: 0 },
+        { name: "Ma3karouna Dry", calories: 371, protein: 13, carbs: 74.7, fats: 1.5, fiber: 3.2 },
+        { name: "Crispy Chicken Air Fried", calories: 220, protein: 24, carbs: 14, fats: 7, fiber: 0.8 }
     ];
 
 
