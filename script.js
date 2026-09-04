@@ -704,13 +704,103 @@ document.addEventListener("DOMContentLoaded", () => {
     // DAILY TRACKER
     // ==================================================
 
-    const workoutCalories = {
-        "Rest": 0,
-        "Upper A": 350,
-        "Upper B": 350,
-        "Lower A": 450,
-        "Lower B": 450
-    };
+    // ==================================================
+    // CALORIE BURN
+    //
+    // Steps and training burn are both scaled to your
+    // body weight using the standard MET formula:
+    //
+    //     kcal per minute = MET x 3.5 x weight(kg) / 200
+    //
+    // Training time is derived from the actual plan -
+    // sets x (working time + rest) - so a session with
+    // more exercises burns more. Upper B (8 exercises)
+    // comes out above Upper A (7) automatically, and if
+    // you ever edit workoutPlans the burn follows.
+    // ==================================================
+
+    const DEFAULT_BODY_WEIGHT = 79;   // kg, until a weight is logged
+    const SECONDS_UNDER_LOAD  = 40;   // working time per set
+    const STEPS_PER_MINUTE    = 100;  // walking cadence
+
+    const MET_WALKING = 3.5;
+    const MET_UPPER   = 5.0;          // upper body resistance training
+    const MET_LOWER   = 6.0;          // heavier compounds, bigger muscles
+
+
+    // Most recent logged body weight, or the default.
+    function getBodyWeight() {
+
+        const weighed =
+            [...bodyProgress]
+                .filter(item => Number(item.weight) > 0)
+                .sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        return Number(weighed[0]?.weight) || DEFAULT_BODY_WEIGHT;
+    }
+
+
+    function caloriesPerMinute(met, weight) {
+        return met * 3.5 * weight / 200;
+    }
+
+
+    // Average the rest range written in the plan:
+    // "90-120 sec" -> 105, "2-3 min" -> 150
+    function restSeconds(rest) {
+
+        const text = String(rest || "");
+        const numbers = text.match(/\d+(\.\d+)?/g);
+
+        if (!numbers) return 60;
+
+        const values = numbers.map(Number);
+
+        const average =
+            values.reduce((sum, n) => sum + n, 0) / values.length;
+
+        return /min/i.test(text) ? average * 60 : average;
+    }
+
+
+    function workoutMinutes(planName) {
+
+        const plan = workoutPlans[planName];
+
+        if (!plan) return 0;
+
+        const seconds =
+            plan.reduce((total, exercise) => {
+
+                const sets = Number(exercise.sets) || 0;
+
+                return total +
+                    sets * (SECONDS_UNDER_LOAD + restSeconds(exercise.rest));
+
+            }, 0);
+
+        return seconds / 60;
+    }
+
+
+    function getWorkoutCalories(planName, weight) {
+
+        if (!planName || planName === "Rest") return 0;
+
+        const met =
+            /lower/i.test(planName) ? MET_LOWER : MET_UPPER;
+
+        return workoutMinutes(planName) * caloriesPerMinute(met, weight);
+    }
+
+
+    function getStepsCalories(steps, weight) {
+
+        const minutes =
+            (Number(steps) || 0) / STEPS_PER_MINUTE;
+
+        return minutes * caloriesPerMinute(MET_WALKING, weight);
+    }
 
 
     function calculateDailyTracker() {
@@ -727,10 +817,13 @@ document.addEventListener("DOMContentLoaded", () => {
         const workout =
             document.getElementById("workoutInput")?.value || "Rest";
 
-        const stepsCalories = steps * 0.04;
+        const bodyWeight = getBodyWeight();
+
+        const stepsCalories =
+            getStepsCalories(steps, bodyWeight);
 
         const exerciseCalories =
-            workoutCalories[workout] || 0;
+            getWorkoutCalories(workout, bodyWeight);
 
         const nutrition = getNutritionTotals(date);
 

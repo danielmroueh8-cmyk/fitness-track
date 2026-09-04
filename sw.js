@@ -12,7 +12,7 @@
    bump CACHE_VERSION below so phones pick up the change.
 ===================================================== */
 
-const CACHE_VERSION = "v4";
+const CACHE_VERSION = "v5";
 const SHELL_CACHE   = `fitness-shell-${CACHE_VERSION}`;
 const RUNTIME_CACHE = `fitness-runtime-${CACHE_VERSION}`;
 
