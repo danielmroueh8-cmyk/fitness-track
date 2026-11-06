@@ -241,6 +241,13 @@ document.addEventListener("DOMContentLoaded", () => {
         if (pageId === "foodDatabase") {
             displayFoods();
         }
+
+        if (pageId === "goals") {
+            loadGoals();
+        }
+
+        // Jump back to the top when switching tabs on a phone.
+        window.scrollTo({ top: 0, behavior: "auto" });
     };
 
 
@@ -3460,11 +3467,46 @@ on(
     // HOVER-TO-OPEN NAVIGATION
     // ==================================================
 
-    document.querySelectorAll(".nav-btn").forEach(btn => {
-        btn.addEventListener("mouseenter", () => {
-            btn.click();
+    // Hovering a tab opens it - but only with a real mouse.
+    // On a touch screen this fires on tap and double-navigates.
+    if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+
+        document.querySelectorAll(".nav-btn").forEach(btn => {
+            btn.addEventListener("mouseenter", () => {
+                btn.click();
+            });
         });
-    });
+    }
+
+
+    // ==================================================
+    // COLLAPSIBLE PANELS
+    // ==================================================
+
+    // Start collapsed on phones so the dashboard is short,
+    // and let charts re-measure themselves when reopened.
+    (function initCollapsiblePanels() {
+
+        const panels =
+            document.querySelectorAll("details.collapsible");
+
+        const isPhone =
+            window.matchMedia("(max-width: 700px)").matches;
+
+        panels.forEach(panel => {
+
+            if (isPhone) {
+                panel.open = false;
+            }
+
+            panel.addEventListener("toggle", () => {
+                if (panel.open) {
+                    window.dispatchEvent(new Event("resize"));
+                }
+            });
+        });
+
+    })();
 
 
     // ==================================================

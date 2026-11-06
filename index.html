@@ -57,10 +57,14 @@
      NAVIGATION
 ===================================================== -->
 
+<!-- data-icon / data-short are used for the phone tab bar -->
+
 <nav>
 
     <button
         class="nav-btn active-nav"
+        data-icon="🏠"
+        data-short="Home"
         onclick="showPage('dashboard', this)"
     >
         Dashboard
@@ -69,6 +73,8 @@
 
     <button
         class="nav-btn"
+        data-icon="🍽"
+        data-short="Log"
         onclick="showPage('foodLog', this)"
     >
         Food Log
@@ -77,6 +83,8 @@
 
     <button
         class="nav-btn"
+        data-icon="📅"
+        data-short="Daily"
         onclick="showPage('dailyTracker', this)"
     >
         Daily Tracker
@@ -85,6 +93,8 @@
 
     <button
         class="nav-btn"
+        data-icon="📏"
+        data-short="Body"
         onclick="showPage('bodyProgress', this)"
     >
         Body Progress
@@ -93,6 +103,8 @@
 
     <button
         class="nav-btn"
+        data-icon="🏋"
+        data-short="Gym"
         onclick="showPage('workoutTracker', this)"
     >
         Workout Tracker
@@ -101,9 +113,21 @@
 
     <button
         class="nav-btn"
+        data-icon="🥫"
+        data-short="Foods"
         onclick="showPage('foodDatabase', this)"
     >
         Food Database
+    </button>
+
+
+    <button
+        class="nav-btn"
+        data-icon="🎯"
+        data-short="Goals"
+        onclick="showPage('goals', this)"
+    >
+        Goals
     </button>
 
 </nav>
@@ -270,26 +294,22 @@
     </div>
 
 
-    <div class="panel">
+    <details class="panel collapsible" open>
 
-        <h3>
-            Achievements
-        </h3>
+        <summary>Achievements</summary>
 
         <div class="achievements-grid" id="achievementsGrid"></div>
 
-    </div>
+    </details>
 
 
-    <div class="panel">
+    <details class="panel collapsible" open>
 
-        <h3>
-            Activity (Last 12 Weeks)
-        </h3>
+        <summary>Activity (Last 12 Weeks)</summary>
 
         <div class="heatmap-grid" id="calendarHeatmap"></div>
 
-    </div>
+    </details>
 
 
 
@@ -357,6 +377,10 @@
 
     <!-- CHARTS -->
 
+    <details class="panel collapsible charts-collapsible" open>
+
+    <summary>Charts</summary>
+
     <div class="charts-grid">
 
 
@@ -406,6 +430,8 @@
 
 
     </div>
+
+    </details>
 
 </section>
 
@@ -1841,6 +1867,105 @@
             </table>
 
         </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     GOALS
+===================================================== -->
+
+<section
+    class="page"
+    id="goals"
+>
+
+    <div class="page-title">
+
+        <div>
+
+            <h2>Goals</h2>
+
+            <p>
+                Your daily targets. Saved on this device.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="panel">
+
+        <h3>Nutrition</h3>
+
+        <div class="goals-grid">
+
+            <div>
+                <label for="goalCalories">Calories (kcal)</label>
+                <input type="number" id="goalCalories" min="0" step="10" inputmode="numeric">
+            </div>
+
+            <div>
+                <label for="goalProtein">Protein (g)</label>
+                <input type="number" id="goalProtein" min="0" step="1" inputmode="numeric">
+            </div>
+
+            <div>
+                <label for="goalCarbs">Carbs (g)</label>
+                <input type="number" id="goalCarbs" min="0" step="1" inputmode="numeric">
+            </div>
+
+            <div>
+                <label for="goalFats">Fats (g)</label>
+                <input type="number" id="goalFats" min="0" step="1" inputmode="numeric">
+            </div>
+
+            <div>
+                <label for="goalFiber">Fiber (g)</label>
+                <input type="number" id="goalFiber" min="0" step="1" inputmode="numeric">
+            </div>
+
+            <div>
+                <label for="goalDeficit">Calorie Deficit</label>
+                <input type="number" id="goalDeficit" min="0" step="25" inputmode="numeric">
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="panel">
+
+        <h3>Activity</h3>
+
+        <div class="goals-grid">
+
+            <div>
+                <label for="goalSteps">Steps</label>
+                <input type="number" id="goalSteps" min="0" step="500" inputmode="numeric">
+            </div>
+
+            <div>
+                <label for="goalSleep">Sleep (hours)</label>
+                <input type="number" id="goalSleep" min="0" max="24" step="0.5" inputmode="decimal">
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="goals-save-row">
+
+        <button id="saveGoals" class="primary-btn">
+            Save Goals
+        </button>
+
+        <span id="goalsSavedMessage" class="goals-saved-message"></span>
 
     </div>
 

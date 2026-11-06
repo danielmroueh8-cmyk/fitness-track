@@ -2554,3 +2554,199 @@ input[type="number"] {
         }
     }
 }
+
+
+/* =====================================================
+   GOALS PAGE
+===================================================== */
+
+.goals-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 16px;
+}
+
+.goals-grid label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #AFA9EC;
+}
+
+.goals-grid input {
+    width: 100%;
+}
+
+.goals-save-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 6px;
+}
+
+.goals-saved-message {
+    font-weight: 700;
+    color: #7CD9A0;
+}
+
+
+/* =====================================================
+   COLLAPSIBLE PANELS
+===================================================== */
+
+details.collapsible > summary {
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 17px;
+    font-weight: 700;
+    color: #EEEDFE;
+}
+
+details.collapsible > summary::-webkit-details-marker {
+    display: none;
+}
+
+details.collapsible > summary::after {
+    content: "▾";
+    font-size: 14px;
+    color: #AFA9EC;
+    transition: transform 0.15s ease;
+}
+
+details.collapsible[open] > summary::after {
+    transform: rotate(180deg);
+}
+
+details.collapsible[open] > summary {
+    margin-bottom: 16px;
+}
+
+
+/* =====================================================
+   PHONE LAYOUT - BOTTOM TAB BAR + TIGHTER CARDS
+===================================================== */
+
+@media (max-width: 700px) {
+
+    /* --- nav becomes a fixed bottom tab bar --- */
+
+    nav {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 60;
+
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 2px;
+
+        padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
+
+        background: #0B0812;
+        border-top: 0.5px solid #241D3D;
+        border-bottom: none;
+        overflow: visible;
+    }
+
+    .nav-btn {
+        /* hides the long desktop label; the pseudo-elements
+           below supply the icon and short name instead */
+        font-size: 0;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+
+        padding: 6px 0 5px;
+        border-radius: 10px;
+        background: transparent;
+        color: #AFA9EC;
+        min-width: 0;
+    }
+
+    .nav-btn::before {
+        content: attr(data-icon);
+        font-size: 18px;
+        line-height: 1;
+    }
+
+    .nav-btn::after {
+        content: attr(data-short);
+        font-size: 9px;
+        font-weight: 700;
+        line-height: 1.1;
+        letter-spacing: 0.1px;
+    }
+
+    .nav-btn:hover {
+        background: transparent;
+        color: #AFA9EC;
+        box-shadow: none;
+    }
+
+    .nav-btn.active-nav {
+        background: rgba(226, 75, 74, 0.16);
+        color: #E24B4A;
+        box-shadow: none;
+    }
+
+    /* keep content clear of the fixed bar */
+    main {
+        padding-bottom: calc(96px + env(safe-area-inset-bottom));
+    }
+
+
+    /* --- summary cards: two per row instead of one --- */
+
+    .summary {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .summary .card {
+        padding: 12px;
+    }
+
+    .summary .card strong {
+        font-size: 19px;
+    }
+
+    /* calories is the one that matters most - give it the full row */
+    .summary .card:first-child {
+        grid-column: 1 / -1;
+    }
+
+
+    /* --- tighter panels --- */
+
+    .panel {
+        padding: 16px;
+        margin-bottom: 14px;
+    }
+
+    .section-title {
+        font-size: 16px;
+    }
+}
+
+
+@media (max-width: 450px) {
+
+    /* the 1-column override from earlier would undo the 2-up
+       grid above, so restate it here */
+    .summary {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .nav-btn::after {
+        font-size: 8px;
+    }
+}
