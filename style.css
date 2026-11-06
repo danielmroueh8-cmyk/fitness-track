@@ -2750,3 +2750,165 @@ details.collapsible[open] > summary {
         font-size: 8px;
     }
 }
+
+
+/* =====================================================
+   DESIGN REFINEMENTS
+
+   The status and battery colours were written for the
+   original white layout (#16a34a, #dc2626, #ca8a04) and
+   were never updated when the dark space theme landed.
+   On a near-black panel they read as muddy and alarming.
+
+   These are the same semantics, re-picked for a dark
+   background, plus small legibility fixes.
+
+   Brand red (#E24B4A) stays for nav and buttons; danger
+   now uses a lighter red so "active" and "problem" no
+   longer look like the same thing.
+===================================================== */
+
+:root {
+    --ok:       #4ADE80;   /* on target */
+    --fine:     #FACC15;   /* acceptable */
+    --warn:     #FB923C;   /* drifting */
+    --bad:      #F87171;   /* off target */
+    --info:     #60A5FA;   /* over target */
+}
+
+
+/* --- status text --- */
+
+.status-excellent { color: var(--ok)   !important; }
+.status-good      { color: var(--fine) !important; }
+.status-low       { color: var(--warn) !important; }
+.status-too-low   { color: var(--bad)  !important; }
+.status-high      { color: var(--bad)  !important; }
+
+
+/* --- progress batteries --- */
+
+.battery-track {
+    background: #1E1733;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.battery-fill {
+    background: var(--bad);
+    box-shadow: 0 0 10px rgba(248, 113, 113, 0.45);
+}
+
+.battery-fill.battery-low {
+    background: var(--bad);
+    box-shadow: 0 0 10px rgba(248, 113, 113, 0.45);
+}
+
+.battery-fill.battery-mid {
+    background: var(--fine);
+    box-shadow: 0 0 10px rgba(250, 204, 21, 0.4);
+}
+
+.battery-fill.battery-good {
+    background: var(--ok);
+    box-shadow: 0 0 10px rgba(74, 222, 128, 0.45);
+}
+
+.battery-fill.battery-over {
+    background: var(--info);
+    box-shadow: 0 0 10px rgba(96, 165, 250, 0.45);
+}
+
+.battery-label {
+    color: #C4BDF2;
+}
+
+
+/* --- card legibility --- */
+
+.card span {
+    color: #9A92E8;
+    letter-spacing: 0.2px;
+}
+
+.panel,
+.card,
+.chart-card,
+.photo-upload-card,
+.fitness-score-panel,
+.compact-targets {
+    border-color: #2C2447;
+    border-radius: 14px;
+}
+
+
+/* --- section titles get a small accent bar --- */
+
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.section-title::before {
+    content: "";
+    width: 3px;
+    height: 1em;
+    border-radius: 999px;
+    background: #E24B4A;
+    flex: none;
+}
+
+
+/* --- the lift on hover is for mice only; on a touch
+       screen it sticks after a tap --- */
+
+@media (hover: none) {
+
+    .panel:hover,
+    .card:hover,
+    .chart-card:hover {
+        transform: none;
+        border-color: #2C2447;
+    }
+}
+
+@media (hover: hover) {
+
+    .panel:hover,
+    .card:hover,
+    .chart-card:hover {
+        transform: translateY(-2px);
+    }
+}
+
+
+/* --- goals page save button + confirmation --- */
+
+.goals-saved-message {
+    color: var(--ok);
+}
+
+
+/* --- collapsed panels read as tappable rows --- */
+
+details.collapsible:not([open]) > summary {
+    margin-bottom: 0;
+}
+
+details.collapsible > summary:hover {
+    color: #FFFFFF;
+}
+
+
+/* --- daily fitness score uses the same dark status palette --- */
+
+.score-excellent { color: var(--ok)   !important; }
+.score-good      { color: var(--fine) !important; }
+.score-low       { color: var(--warn) !important; }
+.score-too-low   { color: var(--bad)  !important; }
+
+.fitness-score-status.score-excellent { background: rgba(74, 222, 128, 0.14);  color: var(--ok)   !important; }
+.fitness-score-status.score-good      { background: rgba(250, 204, 21, 0.14);  color: var(--fine) !important; }
+.fitness-score-status.score-low       { background: rgba(251, 146, 60, 0.14);  color: var(--warn) !important; }
+.fitness-score-status.score-too-low   { background: rgba(248, 113, 113, 0.14); color: var(--bad)  !important; }
